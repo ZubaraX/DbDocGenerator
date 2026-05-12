@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Документация БД: Northwind</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    header { background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    header h1 { font-size: 2em; margin-bottom: 10px; }
+    header p { opacity: 0.9; font-size: 1.1em; }
+    .info-bar { display: flex; gap: 20px; margin-top: 15px; flex-wrap: wrap; }
+    .info-item { background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 6px; font-size: 0.9em; }
+    .toc { background: white; padding: 25px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .toc h2 { margin-bottom: 15px; color: #1a237e; }
+    .toc ul { list-style: none; }
+    .toc li { margin: 5px 0; }
+    .toc a { color: #1565c0; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .table-section { background: white; border-radius: 10px; margin-bottom: 25px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .table-header { background: #e8eaf6; padding: 20px 25px; border-bottom: 2px solid #c5cae9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .table-header h2 { font-size: 1.4em; color: #1a237e; }
+    .table-header .badge { background: #3949ab; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8em; }
+    .table-body { padding: 20px 25px; }
+    .table-desc { color: #666; margin-bottom: 15px; font-style: italic; }
+    table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+    th { background: #1a237e; color: white; padding: 12px 15px; text-align: left; font-weight: 600; }
+    td { padding: 10px 15px; border-bottom: 1px solid #e0e0e0; }
+    tr:hover td { background: #f5f5f5; }
+    .pk { color: #e65100; font-weight: bold; }
+    .fk { color: #2e7d32; }
+    .nullable { color: #999; font-style: italic; }
+    .type { font-family: 'Consolas', monospace; color: #5d4037; }
+    .defaults { color: #7b1fa2; font-size: 0.9em; }
+    .constraints-section { margin-top: 20px; }
+    .constraints-section h3 { color: #1a237e; margin: 15px 0 10px; padding-bottom: 5px; border-bottom: 1px solid #e0e0e0; }
+    .fk-table td { font-size: 0.9em; }
+    .indexes-section h3 { color: #1a237e; margin: 15px 0 10px; }
+    footer { text-align: center; color: #999; margin-top: 40px; padding: 20px; font-size: 0.9em; }
+    .collapsible { cursor: pointer; user-select: none; }
+    .collapsible::before { content: '[+] '; font-size: 0.8em; }
+    .collapsible.collapsed::before { content: '[-] '; }
+    .collapsible-content { max-height: 2000px; overflow: hidden; transition: max-height 0.3s ease; }
+    .collapsible-content.collapsed { max-height: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>DbDoc: Northwind</h1>
+      <p>Техническая документация схемы базы данных</p>
+      <div class="info-bar">
+        <div class="info-item">Server: .\SQLEXPRESS</div>
+        <div class="info-item">Tables: 5</div>
+        <div class="info-item">Schema: dbo</div>
+        <div class="info-item">Generated: 11.05.2026 10:30:00</div>
+      </div>
+    </header>
+
+    <div class="toc">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#table-0">dbo.Categories</a></li>
+        <li><a href="#table-1">dbo.Customers</a></li>
+        <li><a href="#table-2">dbo.Employees</a></li>
+        <li><a href="#table-3">dbo.Products</a></li>
+        <li><a href="#table-4">dbo.Orders</a></li>
+      </ul>
+    </div>
+
+    <div class="table-section" id="table-0">
+      <div class="table-header" onclick="toggleSection(this)">
+        <h2>dbo.Categories</h2>
+        <span class="badge">4 columns</span>
+      </div>
+      <div class="table-body collapsible-content">
+        <p class="table-desc">Product categories for organizing products</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Null</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td class="pk">PK CategoryID</td>
+              <td class="type">int</td>
+              <td class="nullable">No</td>
+              <td class="defaults">IDENTITY</td>
+              <td>Unique identifier</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>CategoryName</td>
+              <td class="type">nvarchar(15)</td>
+              <td>No</td>
+              <td class="defaults">NULL</td>
+              <td>Category name</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Description</td>
+              <td class="type">ntext</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Category description</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Picture</td>
+              <td class="type">image</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="constraints-section">
+          <h3>Primary Key</h3>
+          <table><tbody><tr>
+            <td>CategoryID</td>
+          </tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-section" id="table-1">
+      <div class="table-header" onclick="toggleSection(this)">
+        <h2>dbo.Customers</h2>
+        <span class="badge">12 columns</span>
+      </div>
+      <div class="table-body collapsible-content">
+        <p class="table-desc">Customer information and contact details</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Null</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td class="pk">PK CustomerID</td>
+              <td class="type">nchar(5)</td>
+              <td>No</td>
+              <td class="defaults">NULL</td>
+              <td>Customer ID (e.g., ALFKI)</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>CompanyName</td>
+              <td class="type">nvarchar(40)</td>
+              <td>No</td>
+              <td class="defaults">NULL</td>
+              <td>Company name</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>ContactName</td>
+              <td class="type">nvarchar(30)</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Contact person name</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>ContactTitle</td>
+              <td class="type">nvarchar(30)</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Contact job title</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>City</td>
+              <td class="type">nvarchar(15)</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>City</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Country</td>
+              <td class="type">nvarchar(15)</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Country</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="constraints-section">
+          <h3>Primary Key</h3>
+          <table><tbody><tr>
+            <td>CustomerID</td>
+          </tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-section" id="table-2">
+      <div class="table-header" onclick="toggleSection(this)">
+        <h2>dbo.Products</h2>
+        <span class="badge">8 columns</span>
+      </div>
+      <div class="table-body collapsible-content">
+        <p class="table-desc">Product catalog with pricing and category</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Null</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td class="pk">PK ProductID</td>
+              <td class="type">int</td>
+              <td>No</td>
+              <td class="defaults">IDENTITY</td>
+              <td>Unique identifier</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>ProductName</td>
+              <td class="type">nvarchar(40)</td>
+              <td>No</td>
+              <td class="defaults">NULL</td>
+              <td>Product name</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td class="fk">FK CategoryID</td>
+              <td class="type">int</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Category reference</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>UnitPrice</td>
+              <td class="type">money</td>
+              <td>Yes</td>
+              <td class="defaults">0</td>
+              <td>Price per unit</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>UnitsInStock</td>
+              <td class="type">smallint</td>
+              <td>Yes</td>
+              <td class="defaults">0</td>
+              <td>Stock quantity</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="constraints-section">
+          <h3>Primary Key</h3>
+          <table><tbody><tr>
+            <td>ProductID</td>
+          </tr></tbody></table>
+        </div>
+
+        <div class="constraints-section">
+          <h3>Foreign Keys</h3>
+          <table class="fk-table">
+            <thead><tr><th>Constraint</th><th>Columns</th><th>References</th><th>ON UPDATE</th><th>ON DELETE</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>FK_Products_Categories</td>
+                <td>CategoryID</td>
+                <td>dbo.Categories (CategoryID)</td>
+                <td>NO ACTION</td>
+                <td>NO ACTION</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="constraints-section indexes-section">
+          <h3>Indexes</h3>
+          <table>
+            <thead><tr><th>Index Name</th><th>Unique</th><th>Columns</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>PK_Products [PK]</td>
+                <td>Yes</td>
+                <td>ProductID</td>
+              </tr>
+              <tr>
+                <td>IX_CategoryID</td>
+                <td>No</td>
+                <td>CategoryID</td>
+              </tr>
+              <tr>
+                <td>IX_ProductName</td>
+                <td>Yes</td>
+                <td>ProductName</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-section" id="table-3">
+      <div class="table-header" onclick="toggleSection(this)">
+        <h2>dbo.Orders</h2>
+        <span class="badge">10 columns</span>
+      </div>
+      <div class="table-body collapsible-content">
+        <p class="table-desc">Sales orders with shipping information</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Null</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td class="pk">PK OrderID</td>
+              <td class="type">int</td>
+              <td>No</td>
+              <td class="defaults">IDENTITY</td>
+              <td>Order number</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td class="fk">FK CustomerID</td>
+              <td class="type">nchar(5)</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Customer reference</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td class="fk">FK EmployeeID</td>
+              <td class="type">int</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Salesperson reference</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>OrderDate</td>
+              <td class="type">datetime</td>
+              <td>Yes</td>
+              <td class="defaults">GETDATE()</td>
+              <td>Order date</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>ShipCountry</td>
+              <td class="type">nvarchar(15)</td>
+              <td>Yes</td>
+              <td class="defaults">NULL</td>
+              <td>Shipping country</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="constraints-section">
+          <h3>Primary Key</h3>
+          <table><tbody><tr>
+            <td>OrderID</td>
+          </tr></tbody></table>
+        </div>
+
+        <div class="constraints-section">
+          <h3>Foreign Keys</h3>
+          <table class="fk-table">
+            <thead><tr><th>Constraint</th><th>Columns</th><th>References</th><th>ON UPDATE</th><th>ON DELETE</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>FK_Orders_Customers</td>
+                <td>CustomerID</td>
+                <td>dbo.Customers (CustomerID)</td>
+                <td>NO ACTION</td>
+                <td>NO ACTION</td>
+              </tr>
+              <tr>
+                <td>FK_Orders_Employees</td>
+                <td>EmployeeID</td>
+                <td>dbo.Employees (EmployeeID)</td>
+                <td>NO ACTION</td>
+                <td>NO ACTION</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Documentation generated by DbDocGenerator | 11.05.2026 10:30</p>
+    </footer>
+  </div>
+  <script>
+    function toggleSection(header) {
+      var body = header.nextElementSibling;
+      header.classList.toggle('collapsed');
+      body.classList.toggle('collapsed');
+    }
+  </script>
+</body>
+</html>
